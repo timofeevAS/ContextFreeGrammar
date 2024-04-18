@@ -1,2 +1,2 @@
-class NonTerminalWord(value:String): Word(value) {
+class NonTerminalWord(value: String, expressionList: MutableList<Sequence>): Word(value) {
 }
