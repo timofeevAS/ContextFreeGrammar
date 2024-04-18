@@ -46,6 +46,7 @@ class Grammar(fileName: String) {
                 var word: Word
                 if (terminalFlag) {
                     word = TerminalWord(buf)
+                    terminalFlag = false
                 } else {
                     if (getNonTerminalByValue(buf).getWord() != "") {
                         word = getNonTerminalByValue(buf)
