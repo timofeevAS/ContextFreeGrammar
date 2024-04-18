@@ -1,4 +1,5 @@
-class Word(private val value: String){
+open class Word(private val value: String){
+
     fun getWord():String{
         return value;
     }
