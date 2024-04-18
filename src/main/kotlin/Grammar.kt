@@ -7,7 +7,6 @@ class Grammar(fileName: String) {
 
     init {
         readBackusNaurRules(fileName)
-
     }
 
     private fun parseBackusNaurLine(line:String):List<Word>{
