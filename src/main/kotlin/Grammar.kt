@@ -10,7 +10,7 @@ class Grammar(fileName: String) {
         readBackusNaurRules(fileName)
     }
 
-    private fun getNonTerminalByValue(value:String): NonTerminalWord {
+    fun getNonTerminalByValue(value:String): NonTerminalWord {
         return nonTerminalMap.getOrDefault(value, NonTerminalWord("", mutableListOf()))
     }
     private fun parseSequenceOfExpression(line:String): MutableList<Word> {

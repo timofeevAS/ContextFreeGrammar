@@ -1,0 +1,6 @@
+<Sentence> ::= <NounGroup> <VerbGroup> `.`|<NounGroup> <VerbGroup> `?`
+<NounGroup> ::= <Noun>|<Pronoun>
+<Hs> ::= `has`|`has not`
+<Hv> ::= `have`|`have not`
+<Name> ::= `Alexey`|`Mikhail`
+<Verb> ::= `Ran`|`Studied` <CourseName>|`Did` <Action>|`Felt` <Feeling>

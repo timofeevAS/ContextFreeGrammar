@@ -14,4 +14,16 @@ class NonTerminalWord(value: String, private val expressionList: MutableList<Seq
     fun listToString():String {
         return ""
     }
+
+    override fun hashCode(): Int {
+        return super.hashCode()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is NonTerminalWord) return false
+
+        return this.value == other.value && this.expressionList == other.expressionList
+    }
+
 }
