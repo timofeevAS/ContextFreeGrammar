@@ -204,8 +204,7 @@ class Grammar(fileName: String) {
                         }
                         if (production != null) {
                             val rightSide = production.getSequence()
-                            // Поскольку вы хотите добавить элементы в обратном порядке, используйте reversed()
-                            stack.addAll(rightSide)
+                            rightSide.reversed().forEach { word: Word -> stack.push(word) }
                         }
                         else {
                             return false // Нет подходящего правила грамматики
