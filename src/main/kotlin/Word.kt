@@ -4,6 +4,10 @@ open class Word(protected val value: String){
         return value;
     }
 
+    open fun isTerminal():Boolean{
+        return false;
+    }
+
     override fun toString(): String {
         return "$value"
     }

@@ -14,4 +14,8 @@ class TerminalWord(value: String) : Word(value){
         return super.hashCode()
     }
 
+    override fun isTerminal(): Boolean {
+        return true;
+    }
+
 }

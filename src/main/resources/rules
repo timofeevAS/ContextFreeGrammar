@@ -1,4 +1,4 @@
-<Sentence> ::= <NounGroup> <VerbGroup> `.`|<NounGroup> <VerbGroup> `?`
+<Sentence> ::= <NounGroup> <VerbGroup> `.`|<VerbGroup> <NounGroup> `?`
 
 <NounGroup> ::= <NounH>|<PronounH>
 
@@ -20,11 +20,9 @@
 
 <PeopleWord> ::= `Man`|`Woman`|`Boy`|`Girl`|`Dad`|`Mom`|`Brother`|`Sister`
 
-<Item> ::= `Computer`|`Window`|`Food`|`Breakfast`|`Umbrella`|`Car`|`Keys`
-
 <Adjective> ::= `Cool`|`Strong`|`Bright`|`Clever`|`Dark`|`Large`
 
-<VerbGroup> ::= <MarkerBeforeVerb> <Verb>|<Verb> <MarkerInTheEnd>|<Verb>
+<VerbGroup> ::= <MarkerBeforeVerb> <Verb>|<Verb> <MarkerInTheEnd>
 
 <MarkerBeforeVerb> ::= `ever`|`never`|`just`|`already`
 

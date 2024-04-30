@@ -12,6 +12,10 @@ class Sequence(private val sequence:MutableList<Word>) {
         return sequence == other.sequence
     }
 
+    fun getSequence():MutableList<Word>{
+        return sequence;
+    }
+
     override fun hashCode(): Int {
         return sequence.hashCode()
     }

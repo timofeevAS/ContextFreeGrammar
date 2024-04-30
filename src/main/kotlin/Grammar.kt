@@ -5,9 +5,17 @@ class Grammar(fileName: String) {
     private val regex = Regex(BackusNaurLineRegex)
     private val nonTerminalMap: MutableMap<String, NonTerminalWord> = mutableMapOf()
     private val spaceTerminal: TerminalWord = TerminalWord(" ")
+    private val FIRST = mutableMapOf<NonTerminalWord, MutableSet<TerminalWord>>()
+    private val FOLLOW = mutableMapOf<NonTerminalWord, MutableSet<TerminalWord>>()
 
     init {
         readBackusNaurRules(fileName)
+
+        // Construct FIRST and FOLLOW sets
+        var s: MutableSet<TerminalWord> = mutableSetOf()
+        constructFIRST()
+        constructFOLLOW()
+        println(FOLLOW)
     }
 
     fun getNonTerminalByValue(value:String): NonTerminalWord {
@@ -36,7 +44,7 @@ class Grammar(fileName: String) {
                 pushingFlag = false
                 terminalFlag = true
             } else if (symbol == ' ' && !terminalFlag) {
-                result.add(spaceTerminal)
+                //result.add(spaceTerminal)
                 continue
             }
 
@@ -98,6 +106,73 @@ class Grammar(fileName: String) {
 
         for (nt in nonTerminalMap.keys){
             println("${nonTerminalMap[nt]} -> ${nonTerminalMap[nt]?.getExpressionList()}")
+        }
+
+    }
+
+    private fun getTerminalFirstSet(ntW:NonTerminalWord, firstSet: MutableSet<TerminalWord>) {
+        for (sequence in ntW.getExpressionList()){
+            var word = sequence.getSequence().first()
+            if (word.isTerminal()) {
+                firstSet.add(word as TerminalWord)
+            }
+            else {
+                getTerminalFirstSet(word as NonTerminalWord, firstSet)
+            }
+        }
+    }
+
+    private fun getTerminalFollowSet(ntW:NonTerminalWord, followSet: MutableSet<TerminalWord>) {
+        for (ntA in nonTerminalMap.values){
+            if (ntA == ntW){
+                continue
+            }
+            for (seq in ntA.getExpressionList()) {
+                var seqOfWords = seq.getSequence()
+                for (index in seqOfWords.indices) {
+                    val word = seqOfWords[index]
+                    if (word.equals(ntW)) {
+                        if (index + 1 >= seqOfWords.size) {
+                            continue
+                        }
+                        var followWord = seqOfWords[index + 1]
+
+                        if (followWord.isTerminal()) {
+                            followSet.add(followWord as TerminalWord)
+                        } else {
+                            FIRST[followWord as NonTerminalWord]?.let { followSet.addAll(it) }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    private fun constructFIRST() {
+        for (ntA in nonTerminalMap.values){
+            FIRST[ntA] = mutableSetOf()
+            FIRST[ntA]?.let { getTerminalFirstSet(ntA, it) };
+        }
+    }
+
+    private fun constructFOLLOW() {
+        for (ntA in nonTerminalMap.values){
+            if (FOLLOW[ntA] == null){
+                FOLLOW[ntA] = mutableSetOf()
+            }
+            FOLLOW[ntA]?.let { getTerminalFollowSet(ntA, it) };
+
+            for(sequences in ntA.getExpressionList()){
+                val lastInSeq = sequences.getSequence().last()
+                if (!lastInSeq.isTerminal()){
+                    val followValues = FOLLOW[ntA]
+                    if (FOLLOW[lastInSeq as NonTerminalWord] == null){
+                        FOLLOW[lastInSeq as NonTerminalWord] = mutableSetOf()
+                    }
+                    if (followValues != null) {
+                        FOLLOW[lastInSeq as NonTerminalWord]?.addAll(followValues)
+                    }
+                }
+            }
         }
 
     }

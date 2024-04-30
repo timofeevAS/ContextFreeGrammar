@@ -26,4 +26,7 @@ class NonTerminalWord(value: String, private val expressionList: MutableList<Seq
         return this.value == other.value && this.expressionList == other.expressionList
     }
 
+    override fun isTerminal():Boolean{
+        return false;
+    }
 }
