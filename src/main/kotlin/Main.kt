@@ -1,5 +1,33 @@
 import java.util.*
 
+fun terminalsSequenceToString(sequence:List<Word>):String{
+    var generatedString = ""
+    for (idx in sequence.indices){
+        val word = sequence[idx]
+        if (idx == 0){
+            generatedString += word.getWord()
+                .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+        }
+        else
+        {
+            generatedString += word.getWord()
+        }
+
+        if(idx < sequence.size - 2){
+            generatedString += " "
+        }
+
+
+    }
+
+    if(generatedString.endsWith(" s?") || generatedString.endsWith(" s.")){
+        generatedString = generatedString.replace(" s?", "s?")
+        generatedString = generatedString.replace(" s.", "s.")
+
+    }
+
+    return generatedString
+}
 fun main(args: Array<String>) {
     println("Hello World!")
 
@@ -18,6 +46,10 @@ fun main(args: Array<String>) {
         println("3. show alphabet")
         println("4. show grammar rules")
         println("5. funny tests...")
+
+        if(!scanner.hasNext()){
+            continue
+        }
 
         inputString = scanner.nextLine()
 
@@ -43,25 +75,10 @@ fun main(args: Array<String>) {
 
             "2" -> {
                 println("Generating string...")
-                var generatedString = ""
                 val generatedSentence = grammar.generateSentence()
-                for (idx in generatedSentence.indices){
-                    val word = generatedSentence[idx]
-                    if (idx == 0){
-                        generatedString += word.getWord()
-                            .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
-                    }
-                    else
-                    {
-                        generatedString += word.getWord()
-                    }
 
-                    if(idx < generatedSentence.size - 2){
-                        generatedString += " "
-                    }
 
-                }
-                println("Generated string: $generatedString")
+                println("Generated string: ${terminalsSequenceToString(generatedSentence.toList())}")
             }
             "skip" -> println("Exiting menu.")
             "3" -> {
@@ -78,7 +95,34 @@ fun main(args: Array<String>) {
                 }
             }
             "5" -> {
-                // TODO
+                println("Enter amount of funny tests:")
+                var amount = 0
+                while (true) {
+                    if (scanner.hasNextInt()) {
+                        val userInput = scanner.nextInt()
+                        if (userInput >= 0) {
+                            amount = userInput
+                            break
+                        } else {
+                            println("Please, enter a non-negative integer. Integer should be in range (1,200)")
+                        }
+                    } else {
+                        println("Please, enter a valid integer.")
+                        scanner.next() // Discard invalid input
+                    }
+                }
+
+                for (i in 1..amount){
+                    val generated = grammar.generateSentence()
+                    val ll1list:MutableList<TerminalWord> = mutableListOf()
+
+                    generated.forEach { word -> ll1list.add(word as TerminalWord) }
+                    if (ll1list.contains(TerminalWord("s"))){
+                        println("stop")
+                    }
+                    println("$i. ${terminalsSequenceToString(generated)}    =>    ${grammar.ll1(ll1list)}")
+                }
+
             }
             else -> println("Invalid input. Please try again.")
         }
