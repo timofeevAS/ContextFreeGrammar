@@ -29,8 +29,6 @@ fun terminalsSequenceToString(sequence:List<Word>):String{
     return generatedString
 }
 fun main(args: Array<String>) {
-    println("Hello World!")
-
     // Try adding program arguments via Run/Debug configuration.
     // Learn more about running applications: https://www.jetbrains.com/help/idea/running-applications.html.
     val grammar = Grammar("src/main/resources/rules")
@@ -63,9 +61,24 @@ fun main(args: Array<String>) {
                 lastWord = lastWord.substring(0,lastWord.lastIndex)
 
                 val sequence:MutableList<TerminalWord> = mutableListOf()
+                var flag = false
                 for (word in splittedInput){
+                    if(grammar.getCanonilizeWord(word) == null){
+                        println("$word does not contain in alphabet.")
+                        flag = true
+                        break
+                    }
                     grammar.getCanonilizeWord(word)?.let { TerminalWord(it) }?.let { sequence.add(it) }
                 }
+                if (flag){
+                    continue
+                }
+                if (splittedInput.size == 0){
+                    println("Doesn't contain in grammar.")
+                    continue
+                }
+
+
                 grammar.getCanonilizeWord(lastWord)?.let { TerminalWord(it) }?.let { sequence.add(it) }
                 grammar.getCanonilizeWord(lastSymbol)?.let { TerminalWord(it) }?.let { sequence.add(it) }
 
