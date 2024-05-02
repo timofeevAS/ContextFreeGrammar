@@ -114,7 +114,6 @@ class Grammar(fileName: String) {
         }
 
         for (nt in nonTerminalMap.keys){
-            println("${nonTerminalMap[nt]} -> ${nonTerminalMap[nt]?.getExpressionList()}")
             for (sequence in nonTerminalMap[nt]?.getExpressionList()!!){
                 for (word in sequence.getSequence()){
                     if (word.isTerminal()){
