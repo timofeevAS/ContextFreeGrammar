@@ -7,6 +7,8 @@ class Grammar(fileName: String) {
     private val spaceTerminal: TerminalWord = TerminalWord(" ")
     private val FIRST = mutableMapOf<NonTerminalWord, MutableSet<TerminalWord>>()
     private val FOLLOW = mutableMapOf<NonTerminalWord, MutableSet<TerminalWord>>()
+    private val TRUE_FIRST = mutableMapOf<Pair<NonTerminalWord,Int>,MutableSet<TerminalWord>>()
+    private val LOOKUP_TABLE = mutableMapOf<Pair<NonTerminalWord, TerminalWord>,Pair<NonTerminalWord, Int>>()
 
     init {
         readBackusNaurRules(fileName)
@@ -14,7 +16,9 @@ class Grammar(fileName: String) {
         // Construct FIRST and FOLLOW sets
         var s: MutableSet<TerminalWord> = mutableSetOf()
         constructFIRST()
+        constructTRUEFIRST()
         constructFOLLOW()
+        println(TRUE_FIRST)
     }
 
     fun getNonTerminalByValue(value:String): NonTerminalWord {
@@ -121,6 +125,17 @@ class Grammar(fileName: String) {
         }
     }
 
+    private fun getTerminalTrueFirstSet(ntW:NonTerminalWord, idx:Int, firstSet: MutableSet<TerminalWord>) {
+        var word = ntW.getExpressionList().get(idx).getSequence().first()
+        if (word.isTerminal()) {
+            firstSet.add(word as TerminalWord)
+        }
+        else {
+            getTerminalFirstSet(word as NonTerminalWord, firstSet)
+        }
+
+    }
+
     private fun getTerminalFollowSet(ntW:NonTerminalWord, followSet: MutableSet<TerminalWord>) {
         for (ntA in nonTerminalMap.values){
             if (ntA == ntW){
@@ -173,9 +188,18 @@ class Grammar(fileName: String) {
                 }
             }
         }
-
     }
 
+    private fun constructTRUEFIRST(){
+        for (ntA in nonTerminalMap.values){
+            for (idx in ntA.getExpressionList().indices){
+                val sequence = ntA.getExpressionList().get(idx)
+                TRUE_FIRST[Pair(ntA,idx)] = mutableSetOf()
+                TRUE_FIRST[Pair(ntA, idx)]?.let { getTerminalTrueFirstSet(ntA,idx, it) };
+            }
+
+        }
+    }
     public fun recognizeSequence(sequence:List<TerminalWord>):Boolean{
         val stack = java.util.ArrayDeque<Word>()
         nonTerminalMap["Sentence"]?.let { stack.push(it) }
