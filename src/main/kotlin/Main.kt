@@ -44,6 +44,7 @@ fun main(args: Array<String>) {
         println("3. show alphabet")
         println("4. show grammar rules")
         println("5. funny tests...")
+        println("6. FIRST, FOLLOW")
 
         if(!scanner.hasNext()){
             continue
@@ -87,7 +88,7 @@ fun main(args: Array<String>) {
                     println("Contains grammar")
                 }
                 else {
-                    println("Doesn't contains grammar"))
+                    println("Doesn't contains grammar")
                 }
             }
 
@@ -141,6 +142,12 @@ fun main(args: Array<String>) {
                     println("$i. ${terminalsSequenceToString(generated)}    =>    ${grammar.ll1(ll1list)}")
                 }
 
+            }
+            "6" -> {
+                println("First:")
+                println(grammar.getFIRSTasString())
+                println("Follow:")
+                println(grammar.getFOLLOWasString())
             }
             else -> println("Invalid input. Please try again.")
         }
