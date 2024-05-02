@@ -72,7 +72,10 @@ fun main(args: Array<String>) {
                 }
             }
             "4" -> {
-                // TODO
+                val nonTerminalMap = grammar.getNonTerminalMap()
+                for (nt in nonTerminalMap.keys){
+                    println("${nonTerminalMap[nt]} -> ${nonTerminalMap[nt]?.getExpressionList()}")
+                }
             }
             "5" -> {
                 // TODO

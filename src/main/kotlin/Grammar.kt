@@ -318,4 +318,9 @@ class Grammar(fileName: String) {
     public fun getAlphabet():List<TerminalWord>{
         return terminalAlphabet.toList()
     }
+
+    public fun getNonTerminalMap():Map<String, NonTerminalWord>{
+        return nonTerminalMap.toMap()
+    }
+
 }
