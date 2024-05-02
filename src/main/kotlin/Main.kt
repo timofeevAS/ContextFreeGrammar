@@ -65,7 +65,11 @@ fun main(args: Array<String>) {
             }
             "skip" -> println("Exiting menu.")
             "3" -> {
-                // TODO
+                val alphabet = grammar.getAlphabet()
+                for (idx in alphabet.indices){
+                    val word = alphabet[idx]
+                    println("$idx. ${word.getWord()}")
+                }
             }
             "4" -> {
                 // TODO

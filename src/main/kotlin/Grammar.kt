@@ -315,4 +315,8 @@ class Grammar(fileName: String) {
         }
         return null
     }
+
+    public fun getAlphabet():List<TerminalWord>{
+        return terminalAlphabet.toList()
+    }
 }
