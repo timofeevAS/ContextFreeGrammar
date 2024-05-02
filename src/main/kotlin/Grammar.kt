@@ -24,7 +24,7 @@ class Grammar(fileName: String) {
         constructFOLLOW()
         consturctLOOKUPTABLE()
 
-        println(LOOKUP_TABLE)
+
     }
 
     fun getNonTerminalByValue(value:String): NonTerminalWord {
