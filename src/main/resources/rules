@@ -40,9 +40,7 @@
 
 <TimePeriod> ::= <Numbers> <Times>|<Time>
 
-<Numbers> ::= <Number><Numbers>
-
-<Number> ::= `0`|`1`|`2`|`3`|`4`|`5`|`6`|`7`|`8`|`9`
+<Numbers> ::= `1`|`2`|`3`|`4`|`5`|`10`|`25`
 
 <Time> ::= `age`|`week`|`year`|`hour`|`minute`|`day`
 
