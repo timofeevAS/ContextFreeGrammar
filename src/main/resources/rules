@@ -1,4 +1,4 @@
-<Sentence> ::= <NounGroup> <VerbGroup> `.`|<VerbGroup> <NounGroup> `?`
+<Sentence> ::= <NounGroup> <VerbGroup> `.`|<Hs> <Noun> <VerbGroup> `?`
 
 <NounGroup> ::= <NounH>|<PronounH>
 
@@ -10,33 +10,33 @@
 
 <Hv> ::= `have`|`have not`
 
-<PronounWithHas> ::= `It`|`She`|`He`
+<PronounWithHas> ::= `it`|`she`|`he`
 
-<PronounWithHave> ::= `I`|`You`|`We`|`They`
+<PronounWithHave> ::= `i`|`you`|`we`|`they`
 
 <Noun> ::= <Name>|<PeopleWord>
 
 <Name> ::= `Alexey`|`Mikhail`|`Vadim`|`Dmitry`|`Sergey`|`Vladimir`|`Alexandr`
 
-<PeopleWord> ::= `Man`|`Woman`|`Boy`|`Girl`|`Dad`|`Mom`|`Brother`|`Sister`
+<PeopleWord> ::= `man`|`woman`|`boy`|`girl`|`dad`|`mom`|`brother`|`sister`
 
-<Adjective> ::= `Cool`|`Strong`|`Bright`|`Clever`|`Dark`|`Large`
+<Adjective> ::= `cool`|`strong`|`clever`|`dark`|`large`
 
 <VerbGroup> ::= <MarkerBeforeVerb> <Verb>|<Verb> <MarkerInTheEnd>
 
 <MarkerBeforeVerb> ::= `ever`|`never`|`just`|`already`
 
-<Verb> ::= `Ran`|`Studied` <CourseName>|`Did` <Action>|`Felt` <Feeling>
+<Verb> ::= `ran`|`studied` <CourseName>|`did` <Action>|`felt` <Feeling>
 
-<CourseName> ::= `Math`|`Informatics`|`Programming`|`Physics`
+<CourseName> ::= `math`|`informatics`|`programming`|`physics`
 
-<Action> ::= `Repairs`|`Hometask`|`Dinner`|`Writes`
+<Action> ::= `repairs`|`hometask`|`dinner`|`writes`
 
-<Feeling> ::= `Excellent`|`Tired`|`Happy`|`Proud`
+<Feeling> ::= `excellent`|`tired`|`happy`|`proud`
 
 <MarkerInTheEnd> ::= `yet`|`recently`|`so far`|`lately`|`before`|`till now`|`not yet`|`since` <Year>|`for` <TimePeriod>
 
-<Year> ::= <Number><Number><Number><Number>
+<Year> ::= `2000`|`2001`|`2020`|`2023`
 
 <TimePeriod> ::= <Numbers> <Times>|<Time>
 
