@@ -1,4 +1,5 @@
 import java.io.File
+import kotlin.random.Random
 
 class Grammar(fileName: String) {
     private val BackusNaurLineRegex = "(<\\w+>)\\s::=\\s+((<\\w+>|`[^`]+`)\\s*)+(\\|\\s*((<\\w+>|`[^`]+`)\\s*)+)*"
@@ -313,6 +314,40 @@ class Grammar(fileName: String) {
         }
 
         return inputIndex == sequence.size
+    }
 
+    private fun fullyTerminal(sequence: List<Word>):Boolean{
+        for (word in sequence){
+            if (!word.isTerminal()){
+                return false
+            }
+        }
+        return true
+    }
+
+    public fun generateSentence():List<Word>{
+        val sequence:MutableList<Word> = mutableListOf(nonTerminalMap["Sentence"] as Word)
+
+        while (!fullyTerminal(sequence)){
+            // Find non terminal word
+            var ntA = NULLNTW
+            var ntI = 0
+            for (word in sequence){
+                if (!word.isTerminal()){
+                    ntA = word as NonTerminalWord
+                    break
+                }
+                ntI++
+            }
+            val rules = nonTerminalMap[ntA.getWord()]?.getExpressionList()
+            val randIndex = rules?.let { Random.nextInt(0, it.size) }
+            val rule = randIndex?.let { rules?.get(it) }
+
+            sequence.removeAt(ntI)
+            if (rule != null) {
+                sequence.addAll(ntI, rule.getSequence())
+            }
+        }
+        return sequence
     }
 }
