@@ -323,4 +323,28 @@ class Grammar(fileName: String) {
         return nonTerminalMap.toMap()
     }
 
+    public fun getFIRST(): MutableMap<Pair<NonTerminalWord, Int>, MutableSet<TerminalWord>> {
+        return TRUE_FIRST
+    }
+
+    public fun getFIRSTasString():String{
+        var res = ""
+        for (tfsKey in TRUE_FIRST.keys){
+            res += "FIRST(${tfsKey.first.getWord()} -> ${tfsKey.first.getExpressionList()[tfsKey.second]}) = {${TRUE_FIRST[tfsKey]}}\n"
+        }
+        return res
+    }
+
+    public fun getFOLLOW(): MutableMap<NonTerminalWord, MutableSet<TerminalWord>> {
+        return FOLLOW
+    }
+
+    public fun getFOLLOWasString():String {
+        var res = ""
+        for(fKey in FOLLOW.keys){
+            res += "FOLLOW(${fKey.getWord()}) -> ${FOLLOW[fKey]}\n"
+        }
+        return res
+    }
+
 }
