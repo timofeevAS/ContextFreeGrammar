@@ -83,7 +83,12 @@ fun main(args: Array<String>) {
                 grammar.getCanonilizeWord(lastSymbol)?.let { TerminalWord(it) }?.let { sequence.add(it) }
 
 
-                println(grammar.ll1(sequence))
+                if (grammar.ll1(sequence)){
+                    println("Contains grammar")
+                }
+                else {
+                    println("Doesn't contains grammar"))
+                }
             }
 
             "2" -> {
