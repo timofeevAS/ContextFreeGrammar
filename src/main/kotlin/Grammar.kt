@@ -4,11 +4,14 @@ class Grammar(fileName: String) {
     private val BackusNaurLineRegex = "(<\\w+>)\\s::=\\s+((<\\w+>|`[^`]+`)\\s*)+(\\|\\s*((<\\w+>|`[^`]+`)\\s*)+)*"
     private val regex = Regex(BackusNaurLineRegex)
     private val nonTerminalMap: MutableMap<String, NonTerminalWord> = mutableMapOf()
+    private val terminalAlphabet:MutableSet<TerminalWord> = mutableSetOf()
     private val spaceTerminal: TerminalWord = TerminalWord(" ")
     private val FIRST = mutableMapOf<NonTerminalWord, MutableSet<TerminalWord>>()
     private val FOLLOW = mutableMapOf<NonTerminalWord, MutableSet<TerminalWord>>()
     private val TRUE_FIRST = mutableMapOf<Pair<NonTerminalWord,Int>,MutableSet<TerminalWord>>()
     private val LOOKUP_TABLE = mutableMapOf<Pair<NonTerminalWord, TerminalWord>,Pair<NonTerminalWord, Int>>()
+    private val NULLNTW = NonTerminalWord("", mutableListOf())
+    private val NULLNTWIDX = Pair(NULLNTW, -1)
 
     init {
         readBackusNaurRules(fileName)
@@ -18,7 +21,9 @@ class Grammar(fileName: String) {
         constructFIRST()
         constructTRUEFIRST()
         constructFOLLOW()
-        println(TRUE_FIRST)
+        consturctLOOKUPTABLE()
+
+        println(LOOKUP_TABLE)
     }
 
     fun getNonTerminalByValue(value:String): NonTerminalWord {
@@ -109,6 +114,13 @@ class Grammar(fileName: String) {
 
         for (nt in nonTerminalMap.keys){
             println("${nonTerminalMap[nt]} -> ${nonTerminalMap[nt]?.getExpressionList()}")
+            for (sequence in nonTerminalMap[nt]?.getExpressionList()!!){
+                for (word in sequence.getSequence()){
+                    if (word.isTerminal()){
+                        terminalAlphabet.add(word as TerminalWord)
+                    }
+                }
+            }
         }
 
     }
@@ -199,6 +211,60 @@ class Grammar(fileName: String) {
             }
 
         }
+    }
+
+    private fun findSequence(ntA: NonTerminalWord, tA:TerminalWord):Pair<NonTerminalWord, Int>{
+        for (tfsKey in TRUE_FIRST.keys){
+            if (tfsKey.first == ntA &&
+                TRUE_FIRST[tfsKey]?.contains(tA) == true){
+                return tfsKey
+            }
+        }
+        return NULLNTWIDX
+    }
+    private fun consturctLOOKUPTABLE(){
+        for (ntA in nonTerminalMap.values){
+            for (tA in terminalAlphabet){
+                LOOKUP_TABLE[Pair(ntA,tA)] = findSequence(ntA,tA)
+            }
+        }
+    }
+    public fun ll1(sequence: List<TerminalWord>):Boolean{
+        val stack = java.util.ArrayDeque<Word>()
+        nonTerminalMap["Sentence"]?.let { stack.push(it) }
+
+        var inputIndex = 0
+        while (stack.isNotEmpty()){
+            val currentWord = stack.pop()
+            when (currentWord) {
+                is TerminalWord -> {
+                    if (inputIndex < sequence.size && currentWord == sequence[inputIndex]) {
+                        inputIndex++
+                    } else {
+                        return false // Неожиданный символ или конец входной строки
+                    }
+                }
+
+                is NonTerminalWord -> {
+                    val ltKey = Pair(currentWord, sequence[inputIndex])
+                    if(LOOKUP_TABLE[ltKey] != NULLNTWIDX){
+                        val ntA = LOOKUP_TABLE[ltKey]?.first
+                        val idx = LOOKUP_TABLE[ltKey]?.second
+                        val sequence = idx?.let { ntA?.getExpressionList()?.get(it) }
+                        if (sequence != null) {
+                            for(word in sequence.getSequence().reversed()){
+                                stack.push(word)
+                            }
+                        }
+                    } else{
+                        return false
+                    }
+                }
+
+                else -> return false // Неверный символ
+            }
+        }
+        return inputIndex == sequence.size
     }
     public fun recognizeSequence(sequence:List<TerminalWord>):Boolean{
         val stack = java.util.ArrayDeque<Word>()
