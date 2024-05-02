@@ -267,54 +267,6 @@ class Grammar(fileName: String) {
         }
         return inputIndex == sequence.size
     }
-    public fun recognizeSequence(sequence:List<TerminalWord>):Boolean{
-        val stack = java.util.ArrayDeque<Word>()
-        nonTerminalMap["Sentence"]?.let { stack.push(it) }
-
-        var inputIndex = 0
-        while(stack.isNotEmpty()){
-            val currentWord = stack.pop()
-            when {
-                currentWord is TerminalWord -> {
-                    if (inputIndex < sequence.size && currentWord == sequence[inputIndex]) {
-                        inputIndex++
-                    } else {
-                        return false // Неожиданный символ или конец входной строки
-                    }
-                }
-                currentWord is NonTerminalWord -> {
-                    val first = FIRST[currentWord] ?: error("First set not found for $currentWord")
-                    val follow = FOLLOW[currentWord] ?: error("Follow set not found for $currentWord")
-                    val nextTerminal = if (inputIndex < sequence.size) sequence[inputIndex] else null
-
-                    // Если следующий терминал входной строки принадлежит FIRST(currentSymbol),
-                    // используем соответствующее правило грамматики
-                    if (nextTerminal != null && nextTerminal in first) {
-                        val production = nonTerminalMap[currentWord.getWord()]?.getExpressionList()?.firstOrNull {
-                            nextTerminal in (FIRST[it.getSequence().first()] ?: emptySet())
-                        }
-                        if (production != null) {
-                            val rightSide = production.getSequence()
-                            // Поскольку вы хотите добавить элементы в обратном порядке, используйте reversed()
-                            stack.addAll(rightSide)
-                        }
-                        else {
-                            return false // Нет подходящего правила грамматики
-                        }
-
-                    } else if (nextTerminal in follow) {
-                        // Иначе, если FIRST(currentSymbol) содержит пустую строку, а FOLLOW(currentSymbol)
-                        // содержит следующий терминал, пропустить этот нетерминал
-                    } else {
-                        return false // Нет подходящего правила грамматики
-                    }
-                }
-                else -> return false // Неверный символ
-            }
-        }
-
-        return inputIndex == sequence.size
-    }
 
     private fun fullyTerminal(sequence: List<Word>):Boolean{
         for (word in sequence){
