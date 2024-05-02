@@ -17,6 +17,7 @@ fun main(args: Array<String>) {
         println("2. generate string")
         println("3. show alphabet")
         println("4. show grammar rules")
+        println("5. funny tests...")
 
         inputString = scanner.nextLine()
 
@@ -24,7 +25,20 @@ fun main(args: Array<String>) {
             "1" -> {
                 println("Enter input:")
                 val userInput = scanner.nextLine()
-                // TODO
+                val splittedInput = userInput.split(" ").toMutableList()
+                var lastWord = splittedInput.removeLast()
+                val lastSymbol = "${lastWord.last()}"
+                lastWord = lastWord.substring(0,lastWord.lastIndex)
+
+                val sequence:MutableList<TerminalWord> = mutableListOf()
+                for (word in splittedInput){
+                    grammar.getCanonilizeWord(word)?.let { TerminalWord(it) }?.let { sequence.add(it) }
+                }
+                grammar.getCanonilizeWord(lastWord)?.let { TerminalWord(it) }?.let { sequence.add(it) }
+                grammar.getCanonilizeWord(lastSymbol)?.let { TerminalWord(it) }?.let { sequence.add(it) }
+
+
+                println(grammar.ll1(sequence))
             }
 
             "2" -> {
@@ -49,8 +63,16 @@ fun main(args: Array<String>) {
                 }
                 println("Generated string: $generatedString")
             }
-
             "skip" -> println("Exiting menu.")
+            "3" -> {
+                // TODO
+            }
+            "4" -> {
+                // TODO
+            }
+            "5" -> {
+                // TODO
+            }
             else -> println("Invalid input. Please try again.")
         }
     }

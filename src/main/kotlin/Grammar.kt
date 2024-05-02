@@ -350,4 +350,17 @@ class Grammar(fileName: String) {
         }
         return sequence
     }
+
+    public fun getCanonilizeWord(word:String):String?{
+        val etalonword = word.lowercase()
+        for(twA in terminalAlphabet){
+            if (etalonword == twA.getWord().lowercase()){
+                return twA.getWord()
+            }
+            if(twA.getWord().startsWith(etalonword)){
+                return twA.getWord()
+            }
+        }
+        return null
+    }
 }
