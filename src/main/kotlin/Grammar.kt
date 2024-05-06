@@ -2,7 +2,7 @@ import java.io.File
 import kotlin.random.Random
 
 class Grammar(fileName: String) {
-    private val BackusNaurLineRegex = "(<\\w+>)\\s::=\\s+((<\\w+>|`[^`]+`)\\s*)+(\\|\\s*((<\\w+>|`[^`]+`)\\s*)+)*"
+    private val BackusNaurLineRegex = "(<\\w+>)\\s::=\\s+((<\\w+>|`[^`]*`)\\s*)+(\\|\\s*((<\\w+>|`[^`]*`)\\s*)+)*"
     private val regex = Regex(BackusNaurLineRegex)
     private val nonTerminalMap: MutableMap<String, NonTerminalWord> = mutableMapOf()
     private val terminalAlphabet:MutableSet<TerminalWord> = mutableSetOf()
