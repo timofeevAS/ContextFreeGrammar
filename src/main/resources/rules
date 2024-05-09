@@ -1,14 +1,14 @@
-<Sentence> ::= <NounGroup> <VerbGroup> `.`|<Hs> <Noun> <VerbGroup> `?`
+<Sentence> ::= <NounGroup><Whitespace><VerbGroup>`.`|<Hs><Whitespace><Noun><Whitespace><VerbGroup>`?`
 
 <NounGroup> ::= <NounH>|<PronounH>
 
-<NounH> ::= <Adjective> <Noun> <Hs>|<Noun> <Hs>
+<NounH> ::= <Adjective><Whitespace><Noun><Whitespace><Hs>|<Noun><Whitespace><Hs>
 
-<PronounH> ::= <PronounWithHas> <Hs>|<PronounWithHave> <Hv>
+<PronounH> ::= <PronounWithHas><Whitespace><Hs>|<PronounWithHave><Whitespace><Hv>
 
-<Hs> ::= `has`|`has not`
+<Hs> ::= `has`|`hasn't`
 
-<Hv> ::= `have`|`have not`
+<Hv> ::= `have`|`haven't`
 
 <PronounWithHas> ::= `it`|`she`|`he`
 
@@ -22,11 +22,11 @@
 
 <Adjective> ::= `cool`|`strong`|`clever`|`dark`|`large`
 
-<VerbGroup> ::= <MarkerBeforeVerb> <Verb>|<Verb> <MarkerInTheEnd>
+<VerbGroup> ::= <MarkerBeforeVerb><Whitespace><Verb>|<Verb><MarkerInTheEnd>
 
 <MarkerBeforeVerb> ::= `ever`|`never`|`just`|`already`
 
-<Verb> ::= `run`|`studied` <CourseName>|`did` <Action>|`felt` <Feeling>
+<Verb> ::= `run`|`studied`<Whitespace><CourseName>|`did`<Whitespace><Action>|`felt`<Whitespace><Feeling>
 
 <CourseName> ::= `math`|`informatics`|`programming`|`physics`
 
@@ -34,11 +34,15 @@
 
 <Feeling> ::= `excellent`|`tired`|`happy`|`proud`
 
-<MarkerInTheEnd> ::= `yet`|`recently`|`so far`|`lately`|`before`|`till now`|`not yet`|`since` <Year>|`for` <TimePeriod>
+<Empty> ::= ``
+
+<Whitespace> ::= ` `
+
+<MarkerInTheEnd> ::= <Empty>|`yet`|`recently`|`so`<Whitespace>`far`|`lately`|`before`|`till`<Whitespace>`now`|`since`<Whitespace><Year>|`for`<Whitespace><TimePeriod>
 
 <Year> ::= `2000`|`2001`|`2020`|`2023`
 
-<TimePeriod> ::= <Numbers> <Times>|<Time>
+<TimePeriod> ::= <Numbers><Whitespace><Times>|<Time>
 
 <Numbers> ::= `1`|`2`|`3`|`4`|`5`|`10`|`25`
 
