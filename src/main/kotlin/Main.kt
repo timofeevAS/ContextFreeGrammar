@@ -56,39 +56,22 @@ fun main(args: Array<String>) {
             "1" -> {
                 println("Enter input:")
                 val userInput = scanner.nextLine()
-                val splittedInput = userInput.split(" ").toMutableList()
-                var lastWord = splittedInput.removeLast()
-                val lastSymbol = "${lastWord.last()}"
-                lastWord = lastWord.substring(0,lastWord.lastIndex)
-
                 val sequence:MutableList<TerminalWord> = mutableListOf()
-                var flag = false
-                for (word in splittedInput){
-                    if(grammar.getCanonilizeWord(word) == null){
-                        println("$word does not contain in alphabet.")
-                        flag = true
-                        break
+                var word = ""
+                for (symbol in userInput){
+                    word += symbol
+                    val s = grammar.getCanonilizeWord(word)
+                    if(s != null){
+                        sequence.add(TerminalWord(s))
+                        word = ""
                     }
-                    grammar.getCanonilizeWord(word)?.let { TerminalWord(it) }?.let { sequence.add(it) }
                 }
-                if (flag){
-                    continue
-                }
-                if (splittedInput.size == 0){
-                    println("Doesn't contain in grammar.")
-                    continue
-                }
-
-
-                grammar.getCanonilizeWord(lastWord)?.let { TerminalWord(it) }?.let { sequence.add(it) }
-                grammar.getCanonilizeWord(lastSymbol)?.let { TerminalWord(it) }?.let { sequence.add(it) }
-
 
                 if (grammar.ll1(sequence)){
-                    println("Contains grammar")
+                    println("${userInput.toString()} -> correct")
                 }
                 else {
-                    println("Doesn't contains grammar")
+                    println("${userInput.toString()} -> incorrect")
                 }
             }
 

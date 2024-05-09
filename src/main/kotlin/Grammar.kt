@@ -11,6 +11,7 @@ class Grammar(fileName: String) {
     private val FOLLOW = mutableMapOf<NonTerminalWord, MutableSet<TerminalWord>>()
     private val TRUE_FIRST = mutableMapOf<Pair<NonTerminalWord,Int>,MutableSet<TerminalWord>>()
     private val LOOKUP_TABLE = mutableMapOf<Pair<NonTerminalWord, TerminalWord>,Pair<NonTerminalWord, Int>>()
+    private val NULLABLE_TABLE = mutableSetOf<NonTerminalWord>()
     private val NULLNTW = NonTerminalWord("", mutableListOf())
     private val NULLNTWIDX = Pair(NULLNTW, -1)
 
@@ -118,6 +119,9 @@ class Grammar(fileName: String) {
                 for (word in sequence.getSequence()){
                     if (word.isTerminal()){
                         terminalAlphabet.add(word as TerminalWord)
+                    }
+                    if (word.getWord() == "Empty"){
+                        nonTerminalMap[nt]?.let { NULLABLE_TABLE.add(it) }
                     }
                 }
             }
@@ -256,7 +260,11 @@ class Grammar(fileName: String) {
                                 stack.push(word)
                             }
                         }
-                    } else{
+                    }
+                    else if(NULLABLE_TABLE.contains(currentWord)){
+                        continue
+                    }
+                    else{
                         return false
                     }
                 }
