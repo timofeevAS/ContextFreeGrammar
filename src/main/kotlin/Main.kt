@@ -139,7 +139,7 @@ fun main(args: Array<String>) {
                     if (ll1list.contains(TerminalWord("s"))){
                         println("stop")
                     }
-                    println("$i. ${terminalsSequenceToString(generated)}    =>    ${grammar.ll1(ll1list)}")
+                    println("$i. ${generated.toString()}    =>    ${grammar.ll1(ll1list)}")
                 }
 
             }
