@@ -26,7 +26,7 @@
 
 <MarkerBeforeVerb> ::= `ever`|`never`|`just`|`already`
 
-<Verb> ::= `run`|`studied`<Whitespace><CourseName>|`did`<Whitespace><Action>|`felt`<Whitespace><Feeling>
+<Verb> ::= `run`|`learnt`<Whitespace><CourseName>|`did`<Whitespace><Action>|`felt`<Whitespace><Feeling>
 
 <CourseName> ::= `math`|`informatics`|`programming`|`physics`
 
