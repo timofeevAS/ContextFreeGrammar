@@ -305,10 +305,7 @@ class Grammar(fileName: String) {
     public fun getCanonilizeWord(word:String):String?{
         val etalonword = word.lowercase()
         for(twA in terminalAlphabet){
-            if (etalonword == twA.getWord().lowercase()){
-                return twA.getWord()
-            }
-            if(twA.getWord().startsWith(etalonword)){
+            if (etalonword == twA.getWord().lowercase()) {
                 return twA.getWord()
             }
         }
