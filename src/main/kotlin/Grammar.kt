@@ -310,14 +310,15 @@ class Grammar(fileName: String) {
         return sequence
     }
 
-    public fun getCanonilizeWord(word:String):String?{
+    public fun getCanonilizeWord(word:String):MutableList<String>?{
         val etalonword = word.lowercase()
+        val lst:MutableList<String> = mutableListOf()
         for(twA in terminalAlphabet){
-            if (etalonword == twA.getWord().lowercase()) {
-                return twA.getWord()
+            if (twA.getWord().lowercase().startsWith(etalonword)) {
+                lst.add(twA.getWord())
             }
         }
-        return null
+        return lst
     }
 
     public fun getAlphabet():List<TerminalWord>{

@@ -55,17 +55,34 @@ fun main(args: Array<String>) {
         when (inputString) {
             "1" -> {
                 println("Enter input:")
-                val userInput = scanner.nextLine()
+                val userInput = scanner.nextLine().split(" ").toMutableList()
                 val sequence:MutableList<TerminalWord> = mutableListOf()
                 var word = ""
-                for (symbol in userInput){
-                    word += symbol
-                    val s = grammar.getCanonilizeWord(word)
-                    if(s != null){
-                        sequence.add(TerminalWord(s))
-                        word = ""
+                var idx = 0
+
+
+
+                val last = userInput.last().last().toString()
+                val endWord = userInput.last().dropLast(1)
+
+                userInput.removeLast()
+                userInput.add(endWord)
+                userInput.add(last)
+
+                for (idx in userInput.indices){
+                    val word = userInput[idx].lowercase()
+                    val s =grammar.getCanonilizeWord(word)
+                    if (s != null && s.size == 1 || (word == "has" || word == "have")){
+                        if (s != null) {
+                            sequence.add(TerminalWord(s.first()))
+                        }
+                        if(idx < userInput.size-2){
+                            sequence.add(TerminalWord(" "))
+                        }
                     }
                 }
+
+
 
                 if (grammar.ll1(sequence)){
                     println("${userInput.toString()} -> correct")
