@@ -26,7 +26,7 @@
 
 <MarkerBeforeVerb> ::= `ever`|`never`|`just`|`already`
 
-<Verb> ::= `run`|`learnt`<Whitespace><CourseName>|`did`<Whitespace><Action>|`felt`<Whitespace><Feeling>
+<Verb> ::= `run`|`learnt`<Whitespace><CourseName>|`did`<Whitespace><Action>|`felt`<Whitespace><Feeling><Whitespace>
 
 <CourseName> ::= `math`|`informatics`|`programming`|`physics`
 
@@ -38,14 +38,4 @@
 
 <Whitespace> ::= ` `
 
-<MarkerInTheEnd> ::= <Empty>|`yet`|`recently`|`so`<Whitespace>`far`|`lately`|`before`|`till`<Whitespace>`now`|`since`<Whitespace><Year>|`for`<Whitespace><TimePeriod>
-
-<Year> ::= `2000`|`2001`|`2020`|`2023`
-
-<TimePeriod> ::= <Numbers><Whitespace><Times>|<Time>
-
-<Numbers> ::= `1`|`2`|`3`|`4`|`5`|`10`|`25`
-
-<Time> ::= `age`|`week`|`year`|`hour`|`minute`|`day`
-
-<Times> ::= <Time>`s`
+<MarkerInTheEnd> ::= <Empty>|`yet`|`recently`|`lately`|`before`
