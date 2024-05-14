@@ -1,48 +1,50 @@
-<Sentence> ::= <NounGroup> <VerbGroup> `.`|<VerbGroup> <NounGroup> `?`
+<Sentence> ::= <NounGroup><Whitespace><VerbGroup>`.`|<Hs><Whitespace><Noun><Whitespace><VerbGroup>`?`
 
 <NounGroup> ::= <NounH>|<PronounH>
 
-<NounH> ::= <Adjective> <Noun> <Hs>|<Noun> <Hs>
+<NounH> ::= <Adjective><Whitespace><Noun><Whitespace><Hs>|<Noun><Whitespace><Hs>
 
-<PronounH> ::= <PronounWithHas> <Hs>|<PronounWithHave> <Hv>
+<PronounH> ::= <PronounWithHas><Whitespace><Hs>|<PronounWithHave><Whitespace><Hv>
 
-<Hs> ::= `has`|`has not`
+<Hs> ::= `has`|`hasn't`
 
-<Hv> ::= `have`|`have not`
+<Hv> ::= `have`|`haven't`
 
-<PronounWithHas> ::= `It`|`She`|`He`
+<PronounWithHas> ::= `it`|`she`|`he`
 
-<PronounWithHave> ::= `I`|`You`|`We`|`They`
+<PronounWithHave> ::= `i`|`you`|`we`|`they`
 
 <Noun> ::= <Name>|<PeopleWord>
 
 <Name> ::= `Alexey`|`Mikhail`|`Vadim`|`Dmitry`|`Sergey`|`Vladimir`|`Alexandr`
 
-<PeopleWord> ::= `Man`|`Woman`|`Boy`|`Girl`|`Dad`|`Mom`|`Brother`|`Sister`
+<PeopleWord> ::= `man`|`woman`|`boy`|`girl`|`dad`|`mom`|`brother`|`sister`
 
-<Adjective> ::= `Cool`|`Strong`|`Bright`|`Clever`|`Dark`|`Large`
+<Adjective> ::= `cool`|`strong`|`clever`|`dark`|`large`
 
-<VerbGroup> ::= <MarkerBeforeVerb> <Verb>|<Verb> <MarkerInTheEnd>
+<VerbGroup> ::= <MarkerBeforeVerb><Whitespace><Verb>|<Verb><MarkerInTheEnd>
 
 <MarkerBeforeVerb> ::= `ever`|`never`|`just`|`already`
 
-<Verb> ::= `Ran`|`Studied` <CourseName>|`Did` <Action>|`Felt` <Feeling>
+<Verb> ::= `run`|`learnt`<Whitespace><CourseName>|`did`<Whitespace><Action>|`felt`<Whitespace><Feeling>
 
-<CourseName> ::= `Math`|`Informatics`|`Programming`|`Physics`
+<CourseName> ::= `math`|`informatics`|`programming`|`physics`
 
-<Action> ::= `Repairs`|`Hometask`|`Dinner`|`Writes`
+<Action> ::= `repairs`|`hometask`|`dinner`|`writes`
 
-<Feeling> ::= `Excellent`|`Tired`|`Happy`|`Proud`
+<Feeling> ::= `excellent`|`tired`|`happy`|`proud`
 
-<MarkerInTheEnd> ::= `yet`|`recently`|`so far`|`lately`|`before`|`till now`|`not yet`|`since` <Year>|`for` <TimePeriod>
+<Empty> ::= ``
 
-<Year> ::= <Number><Number><Number><Number>
+<Whitespace> ::= ` `
 
-<TimePeriod> ::= <Numbers> <Times>|<Time>
+<MarkerInTheEnd> ::= <Empty>|`yet`|`recently`|`so`<Whitespace>`far`|`lately`|`before`|`till`<Whitespace>`now`|`since`<Whitespace><Year>|`for`<Whitespace><TimePeriod>
 
-<Numbers> ::= <Number><Numbers>
+<Year> ::= `2000`|`2001`|`2020`|`2023`
 
-<Number> ::= `0`|`1`|`2`|`3`|`4`|`5`|`6`|`7`|`8`|`9`
+<TimePeriod> ::= <Numbers><Whitespace><Times>|<Time>
+
+<Numbers> ::= `1`|`2`|`3`|`4`|`5`|`10`|`25`
 
 <Time> ::= `age`|`week`|`year`|`hour`|`minute`|`day`
 

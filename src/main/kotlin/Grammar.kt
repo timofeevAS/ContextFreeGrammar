@@ -1,12 +1,19 @@
 import java.io.File
+import kotlin.random.Random
 
 class Grammar(fileName: String) {
-    private val BackusNaurLineRegex = "(<\\w+>)\\s::=\\s+((<\\w+>|`[^`]+`)\\s*)+(\\|\\s*((<\\w+>|`[^`]+`)\\s*)+)*"
+    private val BackusNaurLineRegex = "(<\\w+>)\\s::=\\s+((<\\w+>|`[^`]*`)\\s*)+(\\|\\s*((<\\w+>|`[^`]*`)\\s*)+)*"
     private val regex = Regex(BackusNaurLineRegex)
     private val nonTerminalMap: MutableMap<String, NonTerminalWord> = mutableMapOf()
+    private val terminalAlphabet:MutableSet<TerminalWord> = mutableSetOf()
     private val spaceTerminal: TerminalWord = TerminalWord(" ")
     private val FIRST = mutableMapOf<NonTerminalWord, MutableSet<TerminalWord>>()
     private val FOLLOW = mutableMapOf<NonTerminalWord, MutableSet<TerminalWord>>()
+    private val TRUE_FIRST = mutableMapOf<Pair<NonTerminalWord,Int>,MutableSet<TerminalWord>>()
+    private val LOOKUP_TABLE = mutableMapOf<Pair<NonTerminalWord, TerminalWord>,Pair<NonTerminalWord, Int>>()
+    private val NULLABLE_TABLE = mutableSetOf<NonTerminalWord>()
+    private val NULLNTW = NonTerminalWord("", mutableListOf())
+    private val NULLNTWIDX = Pair(NULLNTW, -1)
 
     init {
         readBackusNaurRules(fileName)
@@ -14,7 +21,11 @@ class Grammar(fileName: String) {
         // Construct FIRST and FOLLOW sets
         var s: MutableSet<TerminalWord> = mutableSetOf()
         constructFIRST()
+        constructTRUEFIRST()
         constructFOLLOW()
+        consturctLOOKUPTABLE()
+
+
     }
 
     fun getNonTerminalByValue(value:String): NonTerminalWord {
@@ -104,7 +115,16 @@ class Grammar(fileName: String) {
         }
 
         for (nt in nonTerminalMap.keys){
-            println("${nonTerminalMap[nt]} -> ${nonTerminalMap[nt]?.getExpressionList()}")
+            for (sequence in nonTerminalMap[nt]?.getExpressionList()!!){
+                for (word in sequence.getSequence()){
+                    if (word.isTerminal()){
+                        terminalAlphabet.add(word as TerminalWord)
+                    }
+                    if (word.getWord() == "Empty"){
+                        nonTerminalMap[nt]?.let { NULLABLE_TABLE.add(it) }
+                    }
+                }
+            }
         }
 
     }
@@ -119,6 +139,17 @@ class Grammar(fileName: String) {
                 getTerminalFirstSet(word as NonTerminalWord, firstSet)
             }
         }
+    }
+
+    private fun getTerminalTrueFirstSet(ntW:NonTerminalWord, idx:Int, firstSet: MutableSet<TerminalWord>) {
+        var word = ntW.getExpressionList().get(idx).getSequence().first()
+        if (word.isTerminal()) {
+            firstSet.add(word as TerminalWord)
+        }
+        else {
+            getTerminalFirstSet(word as NonTerminalWord, firstSet)
+        }
+
     }
 
     private fun getTerminalFollowSet(ntW:NonTerminalWord, followSet: MutableSet<TerminalWord>) {
@@ -173,55 +204,152 @@ class Grammar(fileName: String) {
                 }
             }
         }
-
     }
 
-    public fun recognizeSequence(sequence:List<TerminalWord>):Boolean{
+    private fun constructTRUEFIRST(){
+        for (ntA in nonTerminalMap.values){
+            for (idx in ntA.getExpressionList().indices){
+                val sequence = ntA.getExpressionList().get(idx)
+                TRUE_FIRST[Pair(ntA,idx)] = mutableSetOf()
+                TRUE_FIRST[Pair(ntA, idx)]?.let { getTerminalTrueFirstSet(ntA,idx, it) };
+            }
+
+        }
+    }
+
+    private fun findSequence(ntA: NonTerminalWord, tA:TerminalWord):Pair<NonTerminalWord, Int>{
+        for (tfsKey in TRUE_FIRST.keys){
+            if (tfsKey.first == ntA &&
+                TRUE_FIRST[tfsKey]?.contains(tA) == true){
+                return tfsKey
+            }
+        }
+        return NULLNTWIDX
+    }
+    private fun consturctLOOKUPTABLE(){
+        for (ntA in nonTerminalMap.values){
+            for (tA in terminalAlphabet){
+                LOOKUP_TABLE[Pair(ntA,tA)] = findSequence(ntA,tA)
+            }
+        }
+    }
+    public fun ll1(sequence: List<TerminalWord>):Boolean{
         val stack = java.util.ArrayDeque<Word>()
         nonTerminalMap["Sentence"]?.let { stack.push(it) }
 
         var inputIndex = 0
-        while(stack.isNotEmpty()){
+        while (stack.isNotEmpty()){
             val currentWord = stack.pop()
-            when {
-                currentWord is TerminalWord -> {
+            when (currentWord) {
+                is TerminalWord -> {
                     if (inputIndex < sequence.size && currentWord == sequence[inputIndex]) {
                         inputIndex++
                     } else {
                         return false // Неожиданный символ или конец входной строки
                     }
                 }
-                currentWord is NonTerminalWord -> {
-                    val first = FIRST[currentWord] ?: error("First set not found for $currentWord")
-                    val follow = FOLLOW[currentWord] ?: error("Follow set not found for $currentWord")
-                    val nextTerminal = if (inputIndex < sequence.size) sequence[inputIndex] else null
 
-                    // Если следующий терминал входной строки принадлежит FIRST(currentSymbol),
-                    // используем соответствующее правило грамматики
-                    if (nextTerminal != null && nextTerminal in first) {
-                        val production = nonTerminalMap[currentWord.getWord()]?.getExpressionList()?.firstOrNull {
-                            nextTerminal in (FIRST[it.getSequence().first()] ?: emptySet())
+                is NonTerminalWord -> {
+                    val ltKey = Pair(currentWord, sequence[inputIndex])
+                    if(LOOKUP_TABLE[ltKey] != NULLNTWIDX){
+                        val ntA = LOOKUP_TABLE[ltKey]?.first
+                        val idx = LOOKUP_TABLE[ltKey]?.second
+                        val sequence = idx?.let { ntA?.getExpressionList()?.get(it) }
+                        if (sequence != null) {
+                            for(word in sequence.getSequence().reversed()){
+                                stack.push(word)
+                            }
                         }
-                        if (production != null) {
-                            val rightSide = production.getSequence()
-                            rightSide.reversed().forEach { word: Word -> stack.push(word) }
-                        }
-                        else {
-                            return false // Нет подходящего правила грамматики
-                        }
-
-                    } else if (nextTerminal in follow) {
-                        // Иначе, если FIRST(currentSymbol) содержит пустую строку, а FOLLOW(currentSymbol)
-                        // содержит следующий терминал, пропустить этот нетерминал
-                    } else {
-                        return false // Нет подходящего правила грамматики
+                    }
+                    else if(NULLABLE_TABLE.contains(currentWord)){
+                        continue
+                    }
+                    else{
+                        return false
                     }
                 }
+
                 else -> return false // Неверный символ
             }
         }
-
         return inputIndex == sequence.size
-
     }
+
+    private fun fullyTerminal(sequence: List<Word>):Boolean{
+        for (word in sequence){
+            if (!word.isTerminal()){
+                return false
+            }
+        }
+        return true
+    }
+
+    public fun generateSentence():List<Word>{
+        val sequence:MutableList<Word> = mutableListOf(nonTerminalMap["Sentence"] as Word)
+
+        while (!fullyTerminal(sequence)){
+            // Find non terminal word
+            var ntA = NULLNTW
+            var ntI = 0
+            for (word in sequence){
+                if (!word.isTerminal()){
+                    ntA = word as NonTerminalWord
+                    break
+                }
+                ntI++
+            }
+            val rules = nonTerminalMap[ntA.getWord()]?.getExpressionList()
+            val randIndex = rules?.let { Random.nextInt(0, it.size) }
+            val rule = randIndex?.let { rules?.get(it) }
+
+            sequence.removeAt(ntI)
+            if (rule != null) {
+                sequence.addAll(ntI, rule.getSequence())
+            }
+        }
+        return sequence
+    }
+
+    public fun getCanonilizeWord(word:String):String?{
+        val etalonword = word.lowercase()
+        for(twA in terminalAlphabet){
+            if (etalonword == twA.getWord().lowercase()) {
+                return twA.getWord()
+            }
+        }
+        return null
+    }
+
+    public fun getAlphabet():List<TerminalWord>{
+        return terminalAlphabet.toList()
+    }
+
+    public fun getNonTerminalMap():Map<String, NonTerminalWord>{
+        return nonTerminalMap.toMap()
+    }
+
+    public fun getFIRST(): MutableMap<Pair<NonTerminalWord, Int>, MutableSet<TerminalWord>> {
+        return TRUE_FIRST
+    }
+
+    public fun getFIRSTasString():String{
+        var res = ""
+        for (tfsKey in TRUE_FIRST.keys){
+            res += "FIRST(${tfsKey.first.getWord()} -> ${tfsKey.first.getExpressionList()[tfsKey.second]}) = {${TRUE_FIRST[tfsKey]}}\n"
+        }
+        return res
+    }
+
+    public fun getFOLLOW(): MutableMap<NonTerminalWord, MutableSet<TerminalWord>> {
+        return FOLLOW
+    }
+
+    public fun getFOLLOWasString():String {
+        var res = ""
+        for(fKey in FOLLOW.keys){
+            res += "FOLLOW(${fKey.getWord()}) -> ${FOLLOW[fKey]}\n"
+        }
+        return res
+    }
+
 }
