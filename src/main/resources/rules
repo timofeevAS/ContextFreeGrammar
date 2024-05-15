@@ -22,7 +22,7 @@
 
 <Adjective> ::= `cool`|`strong`|`clever`|`dark`|`large`
 
-<VerbGroup> ::= <MarkerBeforeVerb><Whitespace><Verb>|<Verb><MarkerInTheEnd>
+<VerbGroup> ::= <MarkerBeforeVerb><Whitespace><Verb>|<Verb><Whitespace><MarkerInTheEnd>
 
 <MarkerBeforeVerb> ::= `ever`|`never`|`just`|`already`
 

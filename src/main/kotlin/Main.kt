@@ -68,6 +68,7 @@ fun main(args: Array<String>) {
                 userInput.removeLast()
                 userInput.add(endWord)
                 userInput.add(last)
+                var flag = false;
 
                 for (idx in userInput.indices){
                     val word = userInput[idx].lowercase()
@@ -80,11 +81,18 @@ fun main(args: Array<String>) {
                             sequence.add(TerminalWord(" "))
                         }
                     }
+                    else{
+                        println("${userInput.toString()} -> incorrect")
+                        flag = true
+                        break
+                    }
                 }
 
 
-
-                if (grammar.ll1(sequence)){
+                if(flag){
+                    continue
+                }
+                else if (grammar.ll1(sequence)){
                     println("${userInput.toString()} -> correct")
                 }
                 else {
