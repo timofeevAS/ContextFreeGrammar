@@ -1,4 +1,8 @@
-<Sentence> ::= <NounGroup><Whitespace><VerbGroup>`.`|<Hs><Whitespace><Noun><Whitespace><VerbGroup>`?`
+<Sentence> ::= <NounGroup><Whitespace><VerbGroup>`.`|<Question><Whitespace><VerbGroup>`?`
+
+<Question> ::= <Hs><Whitespace><QuestionNoun>|<Hv><Whitespace><PronounWithHave>
+
+<QuestionNoun> ::= <Noun>|<Name>
 
 <NounGroup> ::= <NounH>|<PronounH>
 
