@@ -43,7 +43,7 @@ fun main(args: Array<String>) {
         println("2. generate string")
         println("3. show alphabet")
         println("4. show grammar rules")
-        println("5. funny tests...")
+        println("5. many generations...")
         println("6. FIRST, FOLLOW")
 
         if(!scanner.hasNext()){
@@ -121,7 +121,7 @@ fun main(args: Array<String>) {
                 }
             }
             "5" -> {
-                println("Enter amount of funny tests:")
+                println("Enter amount of generations:")
                 var amount = 0
                 while (true) {
                     if (scanner.hasNextInt()) {
