@@ -31,7 +31,7 @@ fun terminalsSequenceToString(sequence:List<Word>):String{
 fun main(args: Array<String>) {
     // Try adding program arguments via Run/Debug configuration.
     // Learn more about running applications: https://www.jetbrains.com/help/idea/running-applications.html.
-    val grammar = Grammar("src/main/resources/rules")
+    val grammar = Grammar("src/main/resources/lab5","src/main/resources/lab5.semantic")
 
     // inf loop
     val scanner = Scanner(System.`in`)
@@ -55,45 +55,22 @@ fun main(args: Array<String>) {
         when (inputString) {
             "1" -> {
                 println("Enter input:")
-                val userInput = scanner.nextLine().split(" ").toMutableList()
+                val userInput = scanner.nextLine()
                 val sequence:MutableList<TerminalWord> = mutableListOf()
                 var word = ""
                 var idx = 0
 
-
-
-                val last = userInput.last().last().toString()
-                val endWord = userInput.last().dropLast(1)
-
-                userInput.removeLast()
-                userInput.add(endWord)
-                userInput.add(last)
-                var flag = false;
-
-                for (idx in userInput.indices){
-                    val word = userInput[idx].lowercase()
-                    val s =grammar.getCanonilizeWord(word)
-                    if (s != null && s.size == 1 || (word == "has" || word == "have")){
-                        if (s != null) {
-                            sequence.add(TerminalWord(s.first()))
-                        }
-                        if(idx < userInput.size-2){
-                            sequence.add(TerminalWord(" "))
-                        }
-                    }
-                    else{
-                        println("${userInput.toString()} -> incorrect")
-                        flag = true
-                        break
+                for (symbol in userInput){
+                    val s = grammar.getCanonilizeWord(symbol.toString())
+                    if(s != null && s.size == 1){
+                        sequence.add(TerminalWord(symbol.toString()))
                     }
                 }
 
-
-                if(flag){
-                    continue
-                }
-                else if (grammar.ll1(sequence)){
+               val semantics = grammar.ll1semantic(sequence)
+               if (semantics != null){
                     println("${userInput.toString()} -> correct")
+                    println("Semantic: ${semantics}")
                 }
                 else {
                     println("${userInput.toString()} -> incorrect")

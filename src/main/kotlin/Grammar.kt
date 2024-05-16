@@ -1,7 +1,7 @@
 import java.io.File
 import kotlin.random.Random
 
-class Grammar(fileName: String) {
+class Grammar(fileName: String, semanticRules:String) {
     private val BackusNaurLineRegex = "(<\\w+>)\\s::=\\s+((<\\w+>|`[^`]*`)\\s*)+(\\|\\s*((<\\w+>|`[^`]*`)\\s*)+)*"
     private val regex = Regex(BackusNaurLineRegex)
     private val nonTerminalMap: MutableMap<String, NonTerminalWord> = mutableMapOf()
@@ -14,6 +14,7 @@ class Grammar(fileName: String) {
     private val NULLABLE_TABLE = mutableSetOf<NonTerminalWord>()
     private val NULLNTW = NonTerminalWord("", mutableListOf())
     private val NULLNTWIDX = Pair(NULLNTW, -1)
+    private val SEMANTIC_TABLE = mutableMapOf<Pair<NonTerminalWord,Int>,String>()
 
     init {
         readBackusNaurRules(fileName)
@@ -24,8 +25,23 @@ class Grammar(fileName: String) {
         constructTRUEFIRST()
         constructFOLLOW()
         consturctLOOKUPTABLE()
+        constructSEMANTIC(readSemanticRules(semanticRules))
 
 
+    }
+    private fun readSemanticRules(fileName:String): List<String> {
+        val file = File(fileName)
+        val lines = file.readLines()
+        return lines
+    }
+
+    private fun constructSEMANTIC(semantics:List<String>) {
+        var rule_idx = 0
+        for(rule in TRUE_FIRST.keys){
+            SEMANTIC_TABLE[rule] = semantics[rule_idx]
+            rule_idx++
+        }
+        println(SEMANTIC_TABLE)
     }
 
     fun getNonTerminalByValue(value:String): NonTerminalWord {
@@ -277,6 +293,50 @@ class Grammar(fileName: String) {
             }
         }
         return inputIndex == sequence.size
+    }
+
+    public fun ll1semantic(sequence: List<TerminalWord>): MutableList<String>? {
+        val stack = java.util.ArrayDeque<Word>()
+        nonTerminalMap["Sentence"]?.let { stack.push(it) }
+        val semantics:MutableList<String> = mutableListOf()
+
+        var inputIndex = 0
+        while (stack.isNotEmpty()){
+            val currentWord = stack.pop()
+            when (currentWord) {
+                is TerminalWord -> {
+                    if (inputIndex < sequence.size && currentWord == sequence[inputIndex]) {
+                        inputIndex++
+                    } else {
+                        return null // Неожиданный символ или конец входной строки
+                    }
+                }
+
+                is NonTerminalWord -> {
+                    val ltKey = Pair(currentWord, sequence[inputIndex])
+                    if(LOOKUP_TABLE[ltKey] != NULLNTWIDX){
+                        SEMANTIC_TABLE[LOOKUP_TABLE[ltKey]]?.let { semantics.add(it) }
+                        val ntA = LOOKUP_TABLE[ltKey]?.first
+                        val idx = LOOKUP_TABLE[ltKey]?.second
+                        val sequence = idx?.let { ntA?.getExpressionList()?.get(it) }
+                        if (sequence != null) {
+                            for(word in sequence.getSequence().reversed()){
+                                stack.push(word)
+                            }
+                        }
+                    }
+                    else if(NULLABLE_TABLE.contains(currentWord)){
+                        continue
+                    }
+                    else{
+                        return null
+                    }
+                }
+
+                else -> return null // Неверный символ
+            }
+        }
+        return semantics
     }
 
     private fun fullyTerminal(sequence: List<Word>):Boolean{
