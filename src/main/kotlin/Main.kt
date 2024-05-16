@@ -43,7 +43,7 @@ fun main(args: Array<String>) {
         println("2. generate string")
         println("3. show alphabet")
         println("4. show grammar rules")
-        println("5. funny tests...")
+        println("5. many generations...")
         println("6. FIRST, FOLLOW")
 
         if(!scanner.hasNext()){
@@ -56,6 +56,10 @@ fun main(args: Array<String>) {
             "1" -> {
                 println("Enter input:")
                 val userInput = scanner.nextLine().split(" ").toMutableList()
+                if(userInput.first().isEmpty()){
+                    println("Sentence mustn't be empty.")
+                    continue
+                }
                 val sequence:MutableList<TerminalWord> = mutableListOf()
                 var word = ""
                 var idx = 0
@@ -132,7 +136,7 @@ fun main(args: Array<String>) {
                 }
             }
             "5" -> {
-                println("Enter amount of funny tests:")
+                println("Enter amount of generation:")
                 var amount = 0
                 while (true) {
                     if (scanner.hasNextInt()) {
