@@ -336,6 +336,7 @@ class Grammar(fileName: String, semanticRules:String) {
                 else -> return null // Неверный символ
             }
         }
+        if(inputIndex != sequence.size) return null
         return semantics
     }
 

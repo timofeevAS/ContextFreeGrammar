@@ -59,21 +59,32 @@ fun main(args: Array<String>) {
                 val sequence:MutableList<TerminalWord> = mutableListOf()
                 var word = ""
                 var idx = 0
+                var errorflag = ""
 
                 for (symbol in userInput){
                     val s = grammar.getCanonilizeWord(symbol.toString())
                     if(s != null && s.size == 1){
                         sequence.add(TerminalWord(symbol.toString()))
                     }
+                    else
+                    {
+                        errorflag = symbol.toString()
+                        break
+                    }
                 }
 
-               val semantics = grammar.ll1semantic(sequence)
-               if (semantics != null){
-                    println("${userInput.toString()} -> correct")
-                    println("Semantic: ${semantics}")
+                if (errorflag.isNotEmpty()){
+                    println("Symbol $errorflag doesn't contains in grammar")
                 }
                 else {
-                    println("${userInput.toString()} -> incorrect")
+                   val semantics = grammar.ll1semantic(sequence)
+                   if (semantics != null){
+                        println("${userInput.toString()} -> correct")
+                        println("Semantic: ${semantics}")
+                    }
+                    else {
+                        println("${userInput.toString()} -> incorrect")
+                    }
                 }
             }
 
@@ -81,8 +92,19 @@ fun main(args: Array<String>) {
                 println("Generating string...")
                 val generatedSentence = grammar.generateSentence()
 
+                val tmp:MutableList<TerminalWord> = mutableListOf()
 
-                println("Generated string: ${terminalsSequenceToString(generatedSentence.toList())}")
+                for(word in generatedSentence){
+                    tmp.add(word as TerminalWord)
+                }
+
+                var output = ""
+
+                for(symbol in generatedSentence){
+                    output+= symbol.getWord()
+                }
+                println("Generated string: $output")
+                println("Semantic: ${grammar.ll1semantic(tmp)}")
             }
             "skip" -> println("Exiting menu.")
             "3" -> {
