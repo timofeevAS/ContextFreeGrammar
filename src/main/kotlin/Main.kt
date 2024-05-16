@@ -56,6 +56,12 @@ fun main(args: Array<String>) {
             "1" -> {
                 println("Enter input:")
                 val userInput = scanner.nextLine()
+
+                if(userInput.isEmpty()){
+                    println("Dont enter empty strings.")
+                    continue
+                }
+
                 val sequence:MutableList<TerminalWord> = mutableListOf()
                 var word = ""
                 var idx = 0
