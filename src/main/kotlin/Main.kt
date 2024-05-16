@@ -69,6 +69,7 @@ fun main(args: Array<String>) {
                 userInput.add(endWord)
                 userInput.add(last)
                 var flag = false;
+                var errorflag = ""
 
                 for (idx in userInput.indices){
                     val word = userInput[idx].lowercase()
@@ -82,12 +83,17 @@ fun main(args: Array<String>) {
                         }
                     }
                     else{
-                        println("${userInput.toString()} -> incorrect")
-                        flag = true
-                        break
+                        if(!grammar.getAlphabet().contains(TerminalWord(word))){
+                            errorflag=word
+                            break
+                        }
                     }
                 }
 
+                if(errorflag.isNotEmpty()){
+                    println("${errorflag} - doesn't contains in grammar.")
+                    continue
+                }
 
                 if(flag){
                     continue
@@ -103,9 +109,13 @@ fun main(args: Array<String>) {
             "2" -> {
                 println("Generating string...")
                 val generatedSentence = grammar.generateSentence()
+                var output = generatedSentence.first().getWord().capitalize()
 
+                for(word in generatedSentence.subList(1, generatedSentence.size)){
+                    output+=word.getWord()
+                }
 
-                println("Generated string: ${terminalsSequenceToString(generatedSentence.toList())}")
+                println("Generated string: $output")
             }
             "skip" -> println("Exiting menu.")
             "3" -> {
