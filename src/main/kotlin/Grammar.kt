@@ -199,7 +199,11 @@ class Grammar(fileName: String) {
                         FOLLOW[lastInSeq as NonTerminalWord] = mutableSetOf()
                     }
                     if (followValues != null) {
+                        val extraValues = FIRST[lastInSeq as NonTerminalWord]
                         FOLLOW[lastInSeq as NonTerminalWord]?.addAll(followValues)
+                        if (extraValues != null) {
+                            FOLLOW[lastInSeq as NonTerminalWord]?.addAll(extraValues)
+                        }
                     }
                 }
             }
