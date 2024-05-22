@@ -1,12 +1,16 @@
-<Sentence> ::= <NounGroup><Whitespace><VerbGroup>`.`|<Question><Whitespace><VerbGroup>`?`
+<Sentence> ::= <NounGroup><Whitespace><VerbGroup><Conditions>`.`|<Question><Whitespace><VerbGroup><Conditions>`?`
+
+<Conditions> ::= <Preposition><Whitespace><Noun>|<Empty>
+
+<Preposition> ::= `by`|`with`|`for`
 
 <Question> ::= <Hs><Whitespace><QuestionNoun>|<Hv><Whitespace><PronounWithHave>
 
-<QuestionNoun> ::= <Noun>|<Name>
+<QuestionNoun> ::= <Noun>
 
 <NounGroup> ::= <NounH>|<PronounH>
 
-<NounH> ::= <Adjective><Whitespace><Noun><Whitespace><Hs>|<Noun><Whitespace><Hs>
+<NounH> ::= <Noun><Whitespace><Hs>|<Noun><Whitespace><Hs>
 
 <PronounH> ::= <PronounWithHas><Whitespace><Hs>|<PronounWithHave><Whitespace><Hv>
 
@@ -18,11 +22,9 @@
 
 <PronounWithHave> ::= `i`|`you`|`we`|`they`
 
-<Noun> ::= <Name>|<PeopleWord>
+<Noun> ::= <Adjective><Whitespace><NounWord>
 
-<Name> ::= `Alexey`|`Mikhail`|`Vadim`|`Dmitry`|`Sergey`|`Vladimir`|`Alexandr`
-
-<PeopleWord> ::= `man`|`woman`|`boy`|`girl`|`dad`|`mom`|`brother`|`sister`
+<NounWord> ::= `hometask`|`dinner`|`writes`|`Alexey`|`Mikhail`|`Vadim`|`Dmitry`|`Sergey`|`Vladimir`|`Alexandr`|`man`|`woman`|`boy`|`girl`|`dad`|`mom`|`brother`|`sister`|`math`|`informatics`|`programming`|`physics`
 
 <Adjective> ::= `cool`|`strong`|`clever`|`dark`|`large`
 
@@ -32,13 +34,9 @@
 
 <MarkerBeforeVerb> ::= `ever`|`never`|`just`|`already`
 
-<Verb> ::= `run`|`learnt`<Whitespace><CourseName>|`did`<Whitespace><Action>|`felt`<Whitespace><Feeling>
+<Verb> ::= `run`|`learnt`<Whitespace><Noun>|`did`<Whitespace><Noun>|`felt`<Whitespace><Adjective>
 
-<CourseName> ::= `math`|`informatics`|`programming`|`physics`
-
-<Action> ::= `repairs`|`hometask`|`dinner`|`writes`
-
-<Feeling> ::= `excellent`|`tired`|`happy`|`proud`
+<Adjective> ::= `excellent`|`tired`|`happy`|`proud`
 
 <Empty> ::= ``
 
