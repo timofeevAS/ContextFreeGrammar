@@ -31,7 +31,7 @@ fun terminalsSequenceToString(sequence:List<Word>):String{
 fun main(args: Array<String>) {
     // Try adding program arguments via Run/Debug configuration.
     // Learn more about running applications: https://www.jetbrains.com/help/idea/running-applications.html.
-    val grammar = Grammar("src/main/resources/lab5","src/main/resources/lab5.semantic")
+    val grammar = Grammar("src/main/resources/lab5")
 
     // inf loop
     val scanner = Scanner(System.`in`)

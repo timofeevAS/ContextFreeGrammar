@@ -1,7 +1,7 @@
 import java.io.File
 import kotlin.random.Random
 
-class Grammar(fileName: String, semanticRules:String) {
+class Grammar(fileName: String) {
     private val BackusNaurLineRegex = "(<\\w+>)\\s::=\\s+((<\\w+>|`[^`]*`)\\s*)+(\\|\\s*((<\\w+>|`[^`]*`)\\s*)+)*"
     private val regex = Regex(BackusNaurLineRegex)
     private val nonTerminalMap: MutableMap<String, NonTerminalWord> = mutableMapOf()
@@ -14,7 +14,6 @@ class Grammar(fileName: String, semanticRules:String) {
     private val NULLABLE_TABLE = mutableSetOf<NonTerminalWord>()
     private val NULLNTW = NonTerminalWord("", mutableListOf())
     private val NULLNTWIDX = Pair(NULLNTW, -1)
-    private val SEMANTIC_TABLE = mutableMapOf<Pair<NonTerminalWord,Int>,String>()
 
     init {
         readBackusNaurRules(fileName)
@@ -25,23 +24,7 @@ class Grammar(fileName: String, semanticRules:String) {
         constructTRUEFIRST()
         constructFOLLOW()
         consturctLOOKUPTABLE()
-        constructSEMANTIC(readSemanticRules(semanticRules))
 
-
-    }
-    private fun readSemanticRules(fileName:String): List<String> {
-        val file = File(fileName)
-        val lines = file.readLines()
-        return lines
-    }
-
-    private fun constructSEMANTIC(semantics:List<String>) {
-        var rule_idx = 0
-        for(rule in TRUE_FIRST.keys){
-            SEMANTIC_TABLE[rule] = semantics[rule_idx]
-            rule_idx++
-        }
-        println(SEMANTIC_TABLE)
     }
 
     fun getNonTerminalByValue(value:String): NonTerminalWord {
@@ -303,6 +286,22 @@ class Grammar(fileName: String, semanticRules:String) {
         var inputIndex = 0
         while (stack.isNotEmpty()){
             val currentWord = stack.pop()
+
+            when (currentWord.getWord()) {
+                "Semantic1" -> {
+                    semantics.add("->")
+                }
+                "Semantic2" -> {
+                    semantics.add("<-")
+                }
+                "Semantic3" -> {
+                    semantics.add("/\\")
+                }
+                "Semantic4" -> {
+                    semantics.add("\\/")
+                }
+            }
+
             when (currentWord) {
                 is TerminalWord -> {
                     if (inputIndex < sequence.size && currentWord == sequence[inputIndex]) {
@@ -313,9 +312,11 @@ class Grammar(fileName: String, semanticRules:String) {
                 }
 
                 is NonTerminalWord -> {
+                    if(inputIndex == sequence.size && NULLABLE_TABLE.contains(currentWord)){
+                        break
+                    }
                     val ltKey = Pair(currentWord, sequence[inputIndex])
                     if(LOOKUP_TABLE[ltKey] != NULLNTWIDX){
-                        SEMANTIC_TABLE[LOOKUP_TABLE[ltKey]]?.let { semantics.add(it) }
                         val ntA = LOOKUP_TABLE[ltKey]?.first
                         val idx = LOOKUP_TABLE[ltKey]?.second
                         val sequence = idx?.let { ntA?.getExpressionList()?.get(it) }

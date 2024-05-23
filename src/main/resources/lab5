@@ -1,2 +1,7 @@
 <Sentence> ::= `a`<B>
-<B> ::= `a`<B><B>|`b`
+<B> ::= `a`<Semantic1><B><Semantic2><B><Semantic3>|`b`<Semantic4>
+<Semantic1> ::= <Empty>
+<Semantic2> ::= <Empty>
+<Semantic3> ::= <Empty>
+<Semantic4> ::= <Empty>
+<Empty> ::= ``
